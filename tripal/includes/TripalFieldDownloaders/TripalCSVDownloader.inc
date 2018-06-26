@@ -52,7 +52,10 @@ class TripalCSVDownloader extends TripalFieldDownloader {
       $field = $this->fields[$site][$bundle_name][$field_id]['field'];
       $instance = $this->fields[$site][$bundle_name][$field_id]['instance'];
       $field_name = $field['field_name'];
-
+        
+        if (!property_exists($entity, $field_name)){
+            $col[] = '';
+            continue;}
       // If we only have one item for this value then add it.
       if (count($entity->{$field_name}['und']) == 1) {
         $value = $entity->{$field_name}['und'][0]['value'];
