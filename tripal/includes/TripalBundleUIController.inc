@@ -807,6 +807,7 @@ function tripal_admin_add_type_form_validate($form, &$form_state) {
  * Implements hook_submit() for the tripal_admin_add_type_form.
  */
 function tripal_admin_add_type_form_submit($form, &$form_state) {
+  global $user;
   $vocabulary = '';
   $accession = '';
   if (array_key_exists('term', $form_state)) {
@@ -820,40 +821,59 @@ function tripal_admin_add_type_form_submit($form, &$form_state) {
     // as a bundle.
     $term = tripal_load_term_entity(array('vocabulary' => $vocabulary, 'accession' => $accession));
     if (!$term) {
-
-      // Call the submit hook for this form for the storage method that
-      // will be responsible for this cotent type.
-      $stores = module_invoke_all('vocab_storage_info');
-      $selected_store_module = $stores[$store_select]['module'];
-
-      $storage_args = array();
-      $function = $selected_store_module . '_field_storage_bundle_mapping_form_submit';
-      if (function_exists($function)) {
-        $function($form, $form_state, $term, $storage_args);
-      }
-
-      $args = array(
-        'vocabulary' => $vocabulary,
-        'accession' => $accession,
-        'term_name' => $term_name,
-        'storage_args' => $storage_args,
+      $args = array($vocabulary, $accession, $term_name, $store_select, $form, $form_state, $term);
+      $includes = array(
+        module_load_include('inc', 'tripal', 'includes/TripalBundleUIController'),
       );
-
-      $bundle = tripal_create_bundle($args, $error);
-      if (!$bundle) {
-        drupal_set_message($error, 'error');
-        $form_state['redirect'] = "admin/structure/bio_data";
-      }
-      else {
-        drupal_set_message('New content type created!');
-        drupal_set_message('Please ' . l("set the user permissions", "admin/people/permissions") . ' for this new content type.');
-        tripal_admin_access($bundle);
-        $form_state['redirect'] = "admin/structure/bio_data";
-      }
+      tripal_add_job(
+        'Add new content type: ' . $selected_term['term_name'],
+        'tripal',
+        'tripal_admin_add_type_add',
+        $args,
+        $user->uid,
+        10,
+        $includes
+      );
     }
     else {
       drupal_set_message("The term '$accession' already exists as a content type.", 'warning');
     }
+  }
+}
+
+/**
+ * Function to actually create the content type.
+ *
+ * @param [type] $entity
+ * @return void
+ */
+function tripal_admin_add_type_add($vocabulary, $accession, $term_name, $store_select, $form, $form_state, $term) {
+        
+      // Call the submit hook for this form for the storage method that
+      // will be responsible for this cotent type.
+  $stores = module_invoke_all('vocab_storage_info');
+  $selected_store_module = $stores[$store_select]['module'];
+
+  $storage_args = array();
+  $function = $selected_store_module . '_field_storage_bundle_mapping_form_submit';
+  if (function_exists($function)) {
+    $function($form, $form_state, $term, $storage_args);
+  }
+
+  $args = array(
+    'vocabulary' => $vocabulary,
+    'accession' => $accession,
+    'term_name' => $term_name,
+    'storage_args' => $storage_args,
+  );
+
+  $bundle = tripal_create_bundle($args, $error);
+  if (!$bundle) {
+    drupal_set_message($error, 'error');
+  } else {
+    drupal_set_message('New content type created!');
+    drupal_set_message('Please ' . l("set the user permissions", "admin/people/permissions") . ' for this new content type.');
+    tripal_admin_access($bundle);
   }
 }
 
