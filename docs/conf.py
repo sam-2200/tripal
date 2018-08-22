@@ -17,6 +17,7 @@
 # sys.path.insert(0, os.path.abspath('.'))
 
 
+
 # -- Project information -----------------------------------------------------
 
 project = u'Tripal'
@@ -38,8 +39,7 @@ release = u'7.x-3.x'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [
-]
+extensions =  ['breathe' ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -153,3 +153,20 @@ texinfo_documents = [
      author, 'Tripal', 'One line description of project.',
      'Miscellaneous'),
 ]
+
+
+# ---- run doxygen if READTHEDOCS
+
+import subprocess, os
+
+read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
+
+if read_the_docs_build:
+
+    subprocess.call('cd ../; doxygen docs/tripal_doxygen.config', shell=True)
+
+# --- Options for breathe ------------
+
+breathe_projects = { "tripal": "xml/" }
+breathe_default_project = "tripal"
+
