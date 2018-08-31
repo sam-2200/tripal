@@ -7,6 +7,7 @@ Developer's Guide
    :caption: Table of Contents
 
    dev_guide/introduction
+   dev_guide/chado_api
    dev_guide/data_structures
    dev_guide/best_practices
    dev_guide/custom_modules
