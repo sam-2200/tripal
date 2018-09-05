@@ -174,4 +174,3 @@ if read_the_docs_build:
 
 breathe_projects = { "tripal": "xml/" }
 breathe_default_project = "tripal"
-

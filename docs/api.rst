@@ -1,4 +1,7 @@
 API
 =====
 
-.. doxygenclass:: TripalImporter
+.. doxygenindex::
+   :project: tripal
+   :outline:
+   :no-link:
