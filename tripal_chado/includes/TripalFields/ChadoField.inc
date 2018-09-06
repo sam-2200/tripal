@@ -156,13 +156,13 @@ class ChadoField extends TripalField {
    *   A string option used to filter the distinct list. This is used when creating an
    *   autocomplete. For all distinct values, set this to NULL.
    * @param $options
-   *   An array where options for how to generate this list can be specified. 
+   *   An array where options for how to generate this list can be specified.
    *   Supported options include:
    *     - limit: how many results to limit to (Default: 25)
    *     - label_string: a string with tokens that should be used to generate the
    *         human-readable values in the returned list.
    *
-   * The following example shows you how to pull all the value list for a specific instance 
+   * The following example shows you how to pull all the value list for a specific instance
    * of a field.
    * @code
       // In this example we want the values for the obi__organism field
@@ -312,6 +312,42 @@ class ChadoField extends TripalField {
     }
 
     return $values;
+  }
+
+  /**
+   * Describes this field to Views.
+   * @see TripalField::viewsData().
+   */
+  public function viewsData($view_base_id) {
+    $data = parent::viewsData($view_base_id);
+
+    $field_name = $this->field['field_name'];
+    $elements = $this->elementInfo();
+    $field_details = $elements[$field_term];
+
+    // Get any titles or help text that is overriden.
+    $title = ucfirst($this->instance['label']);
+    if (array_key_exists('label', $field_details)) {
+      $title = $field_details['label'];
+    }
+    $help = $this->instance['description'];
+    if (array_key_exists('help', $field_details)) {
+      $help = $field_details['help'];
+    }
+
+    // Add another entry to views for this field providing an alternate
+    // filter handler. This way, the views integration is backwards compatible
+    // and users simply select the "Allowed Values" version of their field
+    // to expose it as a select list.
+    $data[$view_base_id][$field_name . '_values'] = array(
+      'title' => $title . ' (Allowed Values)',
+      'help' => $help,
+      'filter' => array(
+        'handler' => 'tripal_views_handler_filter_string',
+      ),
+    );
+
+    return $data;
   }
 
   /**
