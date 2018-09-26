@@ -1020,10 +1020,14 @@ class OBOImporter extends TripalImporter {
     
     // If EBI sent an error message then throw an error.
     if ($results['error']) {
-      throw new Exception(t('Cannot find the term via an EBI OLS lookup: !term. ' .
-        'EBI Reported: !message.' .
-        'Consider finding the OBO file for this ontology and manually loading it first.',
-        ['!message' => $results['message'], '!term' => $id]));
+      var_dump($full_url);
+      var_dump($results);
+
+      $this->logMessage('Cannot find the term via an EBI OLS lookup: !term. ' .
+        'EBI Reported: !message. Consider finding the OBO file for this ontology and manually loading it first.',
+        ['!message' => $results['message'], '!term' => $id]);
+
+      return FALSE;
     }
 
     // TODO: what do we do if the term is not defined by this ontology?
