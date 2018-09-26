@@ -956,7 +956,7 @@ class OBOImporter extends TripalImporter {
    *   definition, subset, namespace, is_obsolete.
    */
   private function findEBITerm($id) {
-    
+
     // Warn the user if we're looking up terms in EBI as this will slow the
     // loader if there are many lookups.
     if ($this->ebi_warned == FALSE) {
@@ -1022,7 +1022,7 @@ class OBOImporter extends TripalImporter {
     if ($results['error']) {
       $this->logMessage('Cannot find the term via an EBI OLS lookup: !term. ' .
         'EBI Reported: !message. Consider finding the OBO file for this ontology and manually loading it first.',
-        ['!message' => $results['message'], '!term' => $id]);
+        ['!message' => $results['message'], '!term' => $id], TRIPAL_WARNING);
 
       return FALSE;
     }
@@ -1738,6 +1738,12 @@ class OBOImporter extends TripalImporter {
         // If we can't find the term in the database then do an EBI lookup.
         else {          
           $stanza = $this->findEBITerm($id);
+
+          if (!$stanza){
+            //If the findEBITerm returns false, then theres a problem with the Ontology.
+            return;
+          }
+
           
           // Make sure the DBs and CVs exist and are added to our cache.
           $this->addDB($stanza['db_name'][0]);
