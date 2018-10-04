@@ -621,27 +621,6 @@ class OBOImporterTest extends TripalTestCase {
     $result = $importer->findEBITerm($id);
     $this->assertNotEmpty($result);
     $this->assertEquals('fertilizer exposure', $result['name'][0]);
-
     }
 
-  /**
-   * @group obo
-   * @group chado
-   * @ticket 680
-   */
-  public function testLoadStanza() {
-
-    module_load_include('inc', 'tripal_chado', 'includes/TripalImporter/OBOImporter');
-    $importer_private = new \OBOImporter();
-    $importer = reflect($importer_private);
-    $type = "term";
-    $stanza = ['id' => ["PECO:0007085"]];
-
-    $dfsjfkjds = 'trait_ontology';
-
-    $importer->default_namespace = $dfsjfkjds;
-    $importer->default_db = 'TO';
-    $importer->cacheTermStanza($stanza, $type);
-
-  }
 }
