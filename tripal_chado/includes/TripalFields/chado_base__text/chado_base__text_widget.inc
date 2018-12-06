@@ -1,11 +1,13 @@
 <?php
 
 
-class chado_base__textfield_widget extends ChadoFieldWidget {
+class chado_base__text_widget extends ChadoFieldWidget {
 
   // The list of field types for which this widget is appropriate.
   public static $field_types = ['text'];
-  public static $default_label = 'Chado Text Field';
+
+  public $default_label;
+  public $widget_type;
 
 
   /**
@@ -38,7 +40,7 @@ class chado_base__textfield_widget extends ChadoFieldWidget {
     ];
 
     $widget['chado-' . $field_table . '__' . $field_column] = [
-      '#type' => 'textfield',
+      '#type' => $this->widget_type,
       '#title' => $element['#title'],
       '#description' => $element['#description'],
       '#weight' => isset($element['#weight']) ? $element['#weight'] : 0,
