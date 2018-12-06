@@ -1850,7 +1850,35 @@ function tripal_chado_update_7336() {
       $instance_info['widget']['type'] = 'chado_linker__contact_widget';
       $instance_info['formatter']['type'] = 'chado_linker__contact_widget';
       field_update_instance($instance_info);
-      
+
     }
   }
 }
+
+/**
+ * Cusomize default text type widgets linked to chado content.
+ */
+function tripal_chado_update_7337() {
+
+
+  $bundles = field_info_instances('TripalEntity');
+
+  foreach ($bundles as $bundle_name => $fields) {
+    
+    foreach ($fields as $field){
+
+      if ($field['widget']['type'] == 'text_textfield' && isset($field['settings']['base_table'])){
+
+        $field['widget']['type'] = 'chado_base__textfield';
+        field_update_instance($field);
+     }
+
+      if ($field['widget']['type'] == 'text_textarea' && isset($field['settings']['base_table'])){
+
+        $field['widget']['type'] = 'chado_base__textarea';
+        field_update_instance($field);
+      }
+    }
+  }
+}
+

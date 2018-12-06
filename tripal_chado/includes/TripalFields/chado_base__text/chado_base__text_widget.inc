@@ -3,11 +3,13 @@
 
 class chado_base__text_widget extends ChadoFieldWidget {
 
-  // The list of field types for which this widget is appropriate.
-  public static $field_types = ['text'];
+  //public static $field_types = ['text'];
 
-  public $default_label;
-  public $widget_type;
+  //This widget should be extended with a label for the text type.
+  //public static $default_label ;
+
+  //This widget should be extended and define a text type.
+  public static $widget_type;
 
 
   /**
