@@ -189,7 +189,8 @@ function chado_get_organism_select_options($syncd_only = TRUE) {
   $org_list = array();
   $org_list[] = 'Select an organism';
 
-  if ($syncd_only) {
+  // Tripal 2.
+  if ($syncd_only && chado_table_exists('chado_organism')) {
     $sql = "
       SELECT *
       FROM [chado_organism] CO
@@ -202,16 +203,39 @@ function chado_get_organism_select_options($syncd_only = TRUE) {
     foreach ($orgs as $org) {
       $org_list[$org->organism_id] = $org->genus . ' ' . $org->species;
     }
+    return $org_list;
   }
-  else {
-    // use this SQL statement for getting the organisms
-    $csql =  "SELECT * FROM {organism} ORDER BY genus, species";
-    $orgs = chado_query($csql);
 
-    // Iterate through the organisms and build an array of those that are synced.
-    foreach ($orgs as $org) {
+  if ($syncd_only) {
+    $bundle_tables = chado_get_bundles_by_base_table('organism');
+
+    if (empty($bundle_tables)) {
+      return $org_list;
+    }
+    $all_orgs = [];
+
+    $query = db_select('chado.organism', 'o')
+      ->fields('o', ['genus', 'species', 'organism_id']);
+
+    foreach ($bundle_tables as $table) {
+      $query_copy = $query;
+      $query_copy->join('public.' . $table, $table, $table . '.record_id = o.organism_id');
+      $orgs = $query_copy->execute()->fetchAll();
+      array_merge($all_orgs, $orgs);
+    }
+    foreach ($all_orgs as $org) {
       $org_list[$org->organism_id] = $org->genus . ' ' . $org->species;
     }
+    return $org_list;
+  }
+  // Case: ignore published status.
+  // Use this SQL statement for getting the organisms.
+  $csql = "SELECT * FROM {organism} ORDER BY genus, species";
+  $orgs = chado_query($csql);
+
+  // Iterate through the organisms and build an array of those that are synced.
+  foreach ($orgs as $org) {
+    $org_list[$org->organism_id] = $org->genus . ' ' . $org->species;
   }
   return $org_list;
 }

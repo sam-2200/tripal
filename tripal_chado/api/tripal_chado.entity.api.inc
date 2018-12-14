@@ -121,3 +121,25 @@ function chado_get_bundle_entity_table($bundle) {
   }
   return 'chado_' . $bundle->name;
 }
+
+/**
+ * Fetch all chado bundles that use a specific data table.
+ *
+ * @param $chado_table
+ *   The chado table name, ie, organism, contact.
+ *
+ * @return array
+ *   An array of bundles using that base table in the form - chado_bio_data_n.
+ */
+function chado_get_bundles_by_base_table($chado_table) {
+  $return = [];
+  $query = db_select('public.chado_bundle', 'cb');
+  $query->condition('cb.data_table', $chado_table);
+  $query->fields('cb', ['bundle_id']);
+  $bundle_tables = $query->execute()->fetchAll();
+
+  foreach ($bundle_tables as $table){
+    $return[] = 'chado_bui_data_' . $table->bundle_id;
+  }
+  return $return;
+}
