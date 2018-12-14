@@ -90,13 +90,12 @@ class sbo__relationship_widget extends ChadoFieldWidget {
     // Default Values:
     //----------------
     $record_id = '';
-    $subject_id = '';
-    $object_id = '';
     $type_id = '';
     $value = '';
     $rank = '';
-    $subject_label = '';
-    $object_label = '';
+    $entity_partner_type = 'subject';
+    $partner_id = '';
+    $partner_label = '';
     $type = '';
 
     // If the field already has a value then it will come through the $items
@@ -110,9 +109,9 @@ class sbo__relationship_widget extends ChadoFieldWidget {
 
         // Check for element values that correspond to fields in the Chado table.
         $record_id = tripal_get_field_item_keyval($items, $delta, 'chado-' . $field_table . '__' . $pkey, $record_id);
-        $subject_id = tripal_get_field_item_keyval($items, $delta, 'chado-' . $field_table . '__' . $subject_id_key, $subject_id);
-        $object_id = tripal_get_field_item_keyval($items, $delta, 'chado-' . $field_table . '__' . $object_id_key, $object_id);
+        $partner_id = tripal_get_field_item_keyval($items, $delta, 'chado-' . $field_table . '__partner_id', $partner_id);
         $type_id = tripal_get_field_item_keyval($items, $delta, 'chado-' . $field_table . '__type_id', $type_id);
+        $entity_partner_type = tripal_get_field_item_keyval($items, $delta, 'chado-' . $field_table . '__type_id', $entity_partner_type);
 
         // Not all Chado tables have a value and rank.  So we'll only get
         // those if applicable.
@@ -124,10 +123,8 @@ class sbo__relationship_widget extends ChadoFieldWidget {
         }
 
         // Get element values added to help support insert/updates.
-        $object_label = tripal_get_field_item_keyval($items, $delta, 'object_name', $object_label);
-        $subject_label = tripal_get_field_item_keyval($items, $delta, 'subject_name', $subject_label);
+        $partner_label = tripal_get_field_item_keyval($items, $delta, 'partner_name', $partner_label);
         $type = tripal_get_field_item_keyval($items, $delta, 'type_name', $type);
-
       }
     }
 
@@ -215,16 +212,22 @@ class sbo__relationship_widget extends ChadoFieldWidget {
       );
     }
 
-    // Subject:
-    //----------
-    $widget['subject_name'] = array(
+    // This entity is either the subject or object.
+    $widget['entity_partner_type'] = [
+      '#type' => 'radios',
+      '#options' => ['subject', 'object'],
+      '#title' => "Relationship Type",
+      '#description' => "Relationships has a subject and an object.  Select which partner this entity is."
+    ];
+
+    $widget['partner_name'] = [
       '#type' => 'textfield',
-      '#title' => t('Subject'),
-      '#default_value' => $subject_label,
+      '#title' => t('Partner Name'),
+      '#default_value' => $partner_label,
       '#required' => $element['#required'],
-      '#maxlength' => array_key_exists($subject_id_key, $this->schema['fields']) && array_key_exists('length', $this->schema['fields'][$subject_id_key]) ? $this->schema['fields'][$subject_id_key]['length'] : 255,
-      '#size' => 35,
-    );
+      '#maxlength' => array_key_exists($subject_id_key, $this->schema['fields']) && array_key_exists('length', $this->schema['fields'][$partner_id_key]) ? $this->schema['fields'][$partner_id_key]['length'] : 255,
+    ];
+
     // Add autocomplete if we have one for this base table.
     if ($has_autocomplete) {
       $widget['subject_name']['#autocomplete_path'] = $autocomplete_path;
@@ -665,7 +668,7 @@ function sbo__relationship_widget_form_ajax_callback(&$form, $form_state) {
 }
 
 /**
- * An Ajax callback for the relationshp instance setting form.
+ * An Ajax callback for the relationship instance setting form.
  */
 function sbo__relationship_instance_settings_form_ajax_callback(&$form, &$form_state) {
   $acpath  = $form['instance']['settings']['relationships']['option2_parent']['#autocomplete_path'];
