@@ -118,30 +118,11 @@ class sio__annotation_widget extends ChadoFieldWidget {
       '#default_value' => $fk_value,
     );
 
-    $cvs = chado_get_cv_select_options();
-    $widget['cv_id'] = array(
-      '#type' => 'select',
-      '#title' => t('Vocabulary'),
-      '#options' => $cvs,
-      '#default_value' => $cv_id,
-      '#required' => $element['#required'],
-      '#attributes' => array('style' => 'width: 200px;'),
-      '#ajax' => array(
-        'callback' => "sio__annotation_widget_form_ajax_callback",
-        'wrapper' => "$field_name-sio--annotation-$delta",
-        'effect' => 'fade',
-        'method' => 'replace'
-      ),
-    );
-    $cv_schema = chado_get_schema('cvterm');
-    $widget['cvterm_name'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Term Name'),
-      '#default_value' => $cvterm_name,
-      '#maxlength' => array_key_exists('length', $cv_schema['fields']['name']) ? $cv_schema['fields']['name']['length'] : 255,
-      '#autocomplete_path' => 'admin/tripal/storage/chado/auto_name/cvterm/' . $cv_id,
-      '#disabled' => $cv_id ? FALSE : TRUE,
-    );
+    tripal_get_term_lookup_form($widget, $form_state, $cvterm_name,
+      $element['#title'], $element['#description'], $element['#required'],
+      $field_name, $delta);
+
+    dpm($widget);
 
     if (array_key_exists('pub_id', $schema['fields'])) {
       $widget['pub'] = array(
