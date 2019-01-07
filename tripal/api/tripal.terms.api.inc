@@ -748,6 +748,7 @@ function tripal_get_term_lookup_form(&$form, &$form_state, $default_name = '',
       );
     }
   }
+  dpm($form);
 }
 
 /**

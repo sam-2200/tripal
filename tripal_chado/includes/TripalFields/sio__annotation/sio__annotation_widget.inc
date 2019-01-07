@@ -122,8 +122,6 @@ class sio__annotation_widget extends ChadoFieldWidget {
       $element['#title'], $element['#description'], $element['#required'],
       $field_name, $delta);
 
-    dpm($widget);
-
     if (array_key_exists('pub_id', $schema['fields'])) {
       $widget['pub'] = array(
         '#type' => 'textfield',
