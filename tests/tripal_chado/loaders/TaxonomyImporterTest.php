@@ -18,6 +18,13 @@ class TaxonomyImporterTest extends TripalTestCase {
   public function testImportExistingTaxonomyLoader() {
     module_load_include('inc', 'tripal_chado', 'includes/TripalImporter/TaxonomyImporter');
 
+
+    $prev_db = chado_set_active('chado');
+
+    chado_query('TRUNCATE TABLE {organism} CASCADE');
+
+     chado_set_active($prev_db);
+
     $org = [
       'genus' => 'Armadillo',
       'species' => 'officinalis',
@@ -31,10 +38,8 @@ class TaxonomyImporterTest extends TripalTestCase {
     $file = [];
     $run_args = ['import_existing' => TRUE];
     $importer = new \TaxonomyImporter();
-    ob_start();
     $importer->create($run_args, $file);
     $importer->run();
-    ob_end_clean();
 
 
     $query = db_select('chado.organism', 'o');
@@ -62,10 +67,8 @@ class TaxonomyImporterTest extends TripalTestCase {
     $run_args = ['taxonomy_ids' => '96821']; //its the pillbug again!
     $importer = new \TaxonomyImporter();
 
-    ob_start();
     $importer->create($run_args, $file);
     $importer->run();
-    ob_end_clean();
 
     $query = db_select('chado.organism', 'o');
     $query->fields('o', ['genus'])
