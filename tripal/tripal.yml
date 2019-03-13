@@ -1,0 +1,43 @@
+name: Tripal
+description: 'Tripal is a toolkit to facilitate construction of online genomic, genetic (and other biological) websites.'
+core: 8.x
+project: tripal
+package: Tripal
+version: 8.x-4.0
+configure: admin/tripal
+
+stylesheets:
+  all:
+    - theme/css/tripal.css
+    -
+scripts:
+  - theme/js/tripal.js
+
+files:
+  - views_handlers/tripal_views_handler_area_collections.inc
+  - views_handlers/tripal_views_handler_field.inc
+  - views_handlers/tripal_views_handler_field_element.inc
+  - views_handlers/tripal_views_handler_field_entity.inc
+  - views_handlers/tripal_views_handler_field_entity_link.inc
+  - views_handlers/tripal_views_handler_field_entity_link_edit.inc
+  - views_handlers/tripal_views_handler_field_entity_link_delete.inc
+  - views_handlers/tripal_views_handler_field_image.inc
+  - views_handlers/tripal_views_handler_field_boolean.inc
+  - views_handlers/tripal_views_handler_filter.inc
+  - views_handlers/tripal_views_handler_filter_string.inc
+  - views_handlers/tripal_views_handler_filter_numeric.inc
+  - views_handlers/tripal_views_handler_filter_element_string.inc
+  - views_handlers/tripal_views_handler_filter_boolean_operator.inc
+  - views_handlers/tripal_views_handler_filter_entity_string.inc
+  - views_handlers/tripal_views_handler_filter_string_selectbox.inc
+  - views_handlers/tripal_views_handler_sort.inc
+  - views_handlers/tripal_views_handler_sort_entity_string.inc
+  - tripal_views_query.inc
+
+dependencies:
+  - drupal:views
+  - drupal:path
+  - drupal:search
+  - drupal:php
+  - drupal:entity
+  - drupal:redirect
