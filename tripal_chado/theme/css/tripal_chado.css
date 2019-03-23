@@ -25,9 +25,7 @@
 
 .protein-residues-formatter {
   color: black;
-  height: 100px;
   max-width: 500px;
-  overflow: scroll;
   white-space: normal;
   background-color: transparent;
   margin: 0px;
@@ -36,9 +34,7 @@
 
 .residues-formatter {
   color: black;
-  height: 100px;
   max-width: 500px;
-  overflow: scroll;
   white-space: normal;
   background-color: transparent;
   margin: 0px;

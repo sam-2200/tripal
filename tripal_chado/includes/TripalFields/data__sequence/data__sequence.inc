@@ -89,7 +89,6 @@ class data__sequence extends ChadoField {
 
     // Retrieve all the sequence for the given feature.
     $sequences = chado_get_feature_sequences($feature, []);
-    dpm($sequences, 'seq');
     // If there are no direct residues then try to derive from the parent.
     if (empty($sequences) OR (sizeof($sequences) == 1 AND empty($sequences[0]['residues']))) {
       $sequences = chado_get_feature_sequences($feature, ['derive_from_parent' => 1]);
