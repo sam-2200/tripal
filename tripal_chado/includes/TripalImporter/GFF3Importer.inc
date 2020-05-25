@@ -1324,11 +1324,15 @@ class GFF3Importer extends TripalImporter {
    */
   private function loadDbxref($feature, $dbxrefs) {
 
-    // iterate through each of the dbxrefs
+    // Iterate through each of the dbxrefs.
     foreach ($dbxrefs as $dbxref) {
 
-      // get the database name from the reference.  If it doesn't exist then create one.
+      // Get the database name from the reference.
       $ref = explode(":", $dbxref);
+      if (count(ref) != 2) {
+        $this->logMessage("Malformed dbxref in GFF file: $dbxref.", [], TRIPAL_WARNING);
+        continue;
+      }
       $dbname = trim($ref[0]);
       $accession = trim($ref[1]);
 
